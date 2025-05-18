@@ -59,10 +59,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 3
   verticalMoveSpeed: 2
-  horizontalRotateSpeed: 400
-  verticalRotateSpeed: 200
-  acceleration: 100
-  deceleration: 10000
+  horizontalRotateSpeed: 600
+  verticalRotateSpeed: 300
+  acceleration: 8
+  deceleration: 4
   maxPitchAngle: 45
   maxPitchAngleNoInput: 80
 --- !u!114 &1625694288818253311

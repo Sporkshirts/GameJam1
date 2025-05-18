@@ -886,22 +886,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 2248840175822999596, guid: 83ab6a4c6b348ac4a8d5ae9efb08f1e4, type: 3}
-      propertyPath: acceleration
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2248840175822999596, guid: 83ab6a4c6b348ac4a8d5ae9efb08f1e4, type: 3}
-      propertyPath: cameraTarget
-      value: 
-      objectReference: {fileID: 822820108}
-    - target: {fileID: 2248840175822999596, guid: 83ab6a4c6b348ac4a8d5ae9efb08f1e4, type: 3}
-      propertyPath: deceleration
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2248840175822999596, guid: 83ab6a4c6b348ac4a8d5ae9efb08f1e4, type: 3}
-      propertyPath: verticalRotateSpeed
-      value: 300
-      objectReference: {fileID: 0}
     - target: {fileID: 3466026917717993396, guid: 83ab6a4c6b348ac4a8d5ae9efb08f1e4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
