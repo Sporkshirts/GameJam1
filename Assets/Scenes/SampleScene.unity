@@ -1026,7 +1026,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   length: 6
-  nerveDistance: 0.55
+  nerveDistance: 0.22
   reset: 0
   spawn: 0
   snapFirst: 1
@@ -1195,7 +1195,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4140018838518870, guid: c6d3a5db0c45d0e4cac7fd509d4d1787, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00000011920929
+      value: 2.3
       objectReference: {fileID: 0}
     - target: {fileID: 4140018838518870, guid: c6d3a5db0c45d0e4cac7fd509d4d1787, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1417,11 +1417,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4140018838518870, guid: c6d3a5db0c45d0e4cac7fd509d4d1787, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00000011920929
+      value: 2.33
       objectReference: {fileID: 0}
     - target: {fileID: 4140018838518870, guid: c6d3a5db0c45d0e4cac7fd509d4d1787, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.82
+      value: 1.64
       objectReference: {fileID: 0}
     - target: {fileID: 4140018838518870, guid: c6d3a5db0c45d0e4cac7fd509d4d1787, type: 3}
       propertyPath: m_LocalRotation.w
