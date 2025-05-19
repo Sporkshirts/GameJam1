@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 7c8133afc5dd3b94b9dd5675e3bafa8e
+timeCreated: 1493715605
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 89596
+  packageName: Brain Meal
+  packageVersion: 1.0
+  assetPath: Assets/X-Factory - Brain Meal/Source/Materials/Flesh_Mat.mat
+  uploadId: 177704
