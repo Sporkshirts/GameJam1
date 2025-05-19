@@ -152,8 +152,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1431791155}
-  speed: 2
+  speed: 1
   chase: 0
+  returnToSpawn: 0
+  searchRange: 100
+  searchMask:
+    serializedVersion: 2
+    m_Bits: 25
 --- !u!4 &191669533
 Transform:
   m_ObjectHideFlags: 0
@@ -1596,7 +1601,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3466026917717993396, guid: 83ab6a4c6b348ac4a8d5ae9efb08f1e4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.3
+      value: 0.491
       objectReference: {fileID: 0}
     - target: {fileID: 3466026917717993396, guid: 83ab6a4c6b348ac4a8d5ae9efb08f1e4, type: 3}
       propertyPath: m_LocalPosition.z
