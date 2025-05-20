@@ -3,8 +3,8 @@ using UnityEngine;
 public class NerveSpawn : MonoBehaviour
 {
     
-    [SerializeField] GameObject nervePrefab, parentObject, player, brain, flesh1, flesh2;
-    [SerializeField] float playerYOffset, brainYOffset, flesh1YOffset, flesh2YOffset;
+    [SerializeField] GameObject nervePrefab, parentObject, player, brain, flesh1, flesh2, BLink1, BLink2;
+    [SerializeField] float playerYOffset, brainYOffset, flesh1YOffset, flesh2YOffset, bLink1YOffset, bLink2YOffset;
     [SerializeField] LayerMask brainLayer;
 
     [SerializeField]
@@ -16,7 +16,7 @@ public class NerveSpawn : MonoBehaviour
 
     [SerializeField] bool reset, spawn, snapFirst, snapLast;
 
-    GameObject playerAttached, brainAtttached, flesh1Attached, flesh2Attached;
+    GameObject playerAttached, brainAtttached, flesh1Attached, flesh2Attached, bLink1Attached, bLink2Attached;
 
    
 
@@ -89,70 +89,81 @@ public class NerveSpawn : MonoBehaviour
 
     public void Spawn2(GameObject flesh)
     {
-        int count = (int)(length / nerveDistance);
+        if (flesh == null) return;
 
+        int count = Mathf.Max(1, (int)(length / nerveDistance));
+        GameObject firstLink = null;
+        GameObject lastLink = null;
+
+        // Spawn the chain of nerves
         for (int x = 0; x < count; x++)
         {
-            GameObject tmp = Instantiate(
+            GameObject link = Instantiate(
                 nervePrefab,
-                new Vector3(transform.position.x, transform.position.y * nerveDistance * (x + 1), transform.position.z),
-                Quaternion.identity,
+                transform.position + Vector3.up * nerveDistance * x,
+                Quaternion.Euler(180, 0, 0),
                 parentObject.transform
             );
 
-            tmp.transform.eulerAngles = new Vector3(180, 0, 0);
-            tmp.name = parentObject.transform.childCount.ToString();
+            link.name = parentObject.transform.childCount.ToString();
 
             if (x == 0)
             {
-                Destroy(tmp.GetComponent<CharacterJoint>());
+                firstLink = link;
+                Destroy(link.GetComponent<CharacterJoint>());
             }
             else
             {
-                tmp.GetComponent<CharacterJoint>().connectedBody =
-                    parentObject.transform.Find((parentObject.transform.childCount - 1).ToString()).GetComponent<Rigidbody>();
-            }
-        }
+                Rigidbody previousBody = parentObject.transform
+                    .GetChild(parentObject.transform.childCount - 2)
+                    .GetComponent<Rigidbody>();
 
-        if (brain)
-        {
-            if (Physics.Raycast(player.transform.position, brain.transform.position - player.transform.position, out RaycastHit hit, 100f, brainLayer))
+                link.GetComponent<CharacterJoint>().connectedBody = previousBody;
+            }
+
+            if (x == count - 1)
             {
-                brainAtttached = parentObject.transform.Find("1").gameObject;
-                brainAtttached.transform.position = new Vector3(hit.point.x, hit.point.y + brainYOffset, hit.point.z);
-                brainAtttached.AddComponent<CharacterJoint>().connectedBody = brain.GetComponent<Rigidbody>();
+                lastLink = link;
             }
         }
 
-        AttachFlesh(flesh);
-    }
+        // Determine the proper BLink and Y offsets
+        GameObject targetBLink = null;
+        float fleshYOffset = 0f;
+        float bLinkYOffset = 0f;
 
-
-
-
-    private void AttachFlesh(GameObject flesh)
-    {
-        if (flesh == null) return;
-
-        float yOffset = (flesh == flesh1) ? flesh1YOffset :
-                        (flesh == flesh2) ? flesh2YOffset : 0;
-
-        GameObject attached = parentObject.transform.Find(parentObject.transform.childCount.ToString())?.gameObject;
-
-        if (attached)
+        if (flesh == flesh1)
         {
-            attached.transform.position = new Vector3(
-                flesh.transform.position.x,
-                flesh.transform.position.y + yOffset,
-                flesh.transform.position.z
-            );
+            targetBLink = BLink1;
+            fleshYOffset = flesh1YOffset;
+            bLinkYOffset = bLink1YOffset;
+        }
+        else if (flesh == flesh2)
+        {
+            targetBLink = BLink2;
+            fleshYOffset = flesh2YOffset;
+            bLinkYOffset = bLink2YOffset;
+        }
 
-            flesh.AddComponent<CharacterJoint>().connectedBody = attached.GetComponent<Rigidbody>();
+        // Connect first link to flesh
+        if (firstLink != null && flesh != null)
+        {
+            firstLink.transform.position = flesh.transform.position + Vector3.up * fleshYOffset;
+            CharacterJoint joint = flesh.AddComponent<CharacterJoint>();
+            joint.connectedBody = firstLink.GetComponent<Rigidbody>();
+        }
 
-            if (flesh == flesh1) flesh1Attached = attached;
-            else if (flesh == flesh2) flesh2Attached = attached;
+        // Connect last link to BLink
+        if (lastLink != null && targetBLink != null)
+        {
+            lastLink.transform.position = targetBLink.transform.position + Vector3.up * bLinkYOffset;
+            CharacterJoint joint = lastLink.AddComponent<CharacterJoint>();
+            joint.connectedBody = targetBLink.GetComponent<Rigidbody>();
         }
     }
+
+
+
 
 
 
