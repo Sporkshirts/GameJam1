@@ -1,8 +1,10 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class NerveSpawn : MonoBehaviour
 {
-    
+
     [SerializeField] GameObject nervePrefab, parentObject, player, brain, flesh1, flesh2, BLink1, BLink2;
     [SerializeField] float playerYOffset, brainYOffset, flesh1YOffset, flesh2YOffset, bLink1YOffset, bLink2YOffset;
     [SerializeField] LayerMask brainLayer;
@@ -18,7 +20,7 @@ public class NerveSpawn : MonoBehaviour
 
     GameObject playerAttached, brainAtttached, flesh1Attached, flesh2Attached, bLink1Attached, bLink2Attached;
 
-   
+
 
 
 
@@ -46,46 +48,89 @@ public class NerveSpawn : MonoBehaviour
 
     public void Spawn()
     {
-        int count = (int)(length / nerveDistance);
+        if (parentObject == null || nervePrefab == null) return;
 
-        for (int x = 0; x < count; x++)
+        int count = Mathf.CeilToInt(length / nerveDistance);
+
+        GameObject previousSegment = null;
+
+        Vector3 startPoint = brain.transform.position + Vector3.up * brainYOffset;
+        Vector3 endPoint = player.transform.position + Vector3.up * playerYOffset;
+        Vector3 direction = (endPoint - startPoint).normalized;
+        Quaternion rotation = Quaternion.FromToRotation(Vector3.down, direction);
+
+        for (int i = 0; i < count; i++)
         {
-            GameObject tmp;
+            Vector3 spawnPos = startPoint + direction * (nerveDistance * i);
 
-            tmp = Instantiate(nervePrefab, new Vector3(transform.position.x, transform.position.y * nerveDistance * (x + 1), transform.position.z), Quaternion.identity, parentObject.transform);
-            tmp.transform.eulerAngles = new Vector3(180, 0, 0);
+            GameObject segment = Instantiate(nervePrefab, spawnPos, rotation, parentObject.transform);
+            segment.name = (i + 1).ToString();
 
-            tmp.name = parentObject.transform.childCount.ToString();
-
-            if (x == 0)
+            if (i == 0)
             {
-                Destroy(tmp.GetComponent<CharacterJoint>());
+                brainAtttached = segment;
+            }
+            if (i == count - 1)
+            {
+                playerAttached = segment;
+            }
+
+            Rigidbody rb = segment.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+
+            if (i > 0 && previousSegment != null)
+            {
+                CharacterJoint joint = segment.GetComponent<CharacterJoint>();
+                if (joint != null)
+                {
+                    joint.connectedBody = previousSegment.GetComponent<Rigidbody>();
+                }
             }
             else
             {
-                tmp.GetComponent<CharacterJoint>().connectedBody = parentObject.transform.Find((parentObject.transform.childCount - 1).ToString()).GetComponent<Rigidbody>();
+                Destroy(segment.GetComponent<CharacterJoint>());
             }
+
+            previousSegment = segment;
         }
 
-        if (brain)
+        if (brain != null && Physics.Raycast(player.transform.position, brain.transform.position - player.transform.position, out RaycastHit hit, 100f, brainLayer))
         {
-            if (Physics.Raycast(player.transform.position, brain.transform.position - player.transform.position, out RaycastHit hit, 100f, brainLayer))
+            Rigidbody brainRb = brain.GetComponent<Rigidbody>();
+
+            if (brainRb != null && brainAtttached != null)
             {
-                brainAtttached = parentObject.transform.Find("1").gameObject;
-                brainAtttached.transform.position = new Vector3(hit.point.x, hit.point.y + brainYOffset, hit.point.z);
-                brainAtttached.AddComponent<CharacterJoint>().connectedBody = brain.GetComponent<Rigidbody>();
+                brainAtttached.transform.position = hit.point + Vector3.up * brainYOffset;
+
+                CharacterJoint brainJoint = brainAtttached.AddComponent<CharacterJoint>();
+                brainJoint.connectedBody = brainRb;
             }
         }
 
-        if (player)
+        if (player != null)
         {
-            playerAttached = parentObject.transform.Find(parentObject.transform.childCount.ToString()).gameObject;
-            playerAttached.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + playerYOffset, player.transform.position.z);
-            player.AddComponent<CharacterJoint>().connectedBody = playerAttached.GetComponent<Rigidbody>();
+
+            if (playerAttached != null)
+            {
+                playerAttached.GetComponent<Renderer>().enabled = false; 
+                playerAttached.transform.position = player.transform.position + Vector3.up * playerYOffset;
+
+                Rigidbody playerRb = player.GetComponent<Rigidbody>();
+                if (playerRb != null)
+                {
+                    CharacterJoint playerJoint = player.AddComponent<CharacterJoint>();
+                    playerJoint.connectedBody = playerAttached.GetComponent<Rigidbody>();
+                }
+            }
         }
 
 
     }
+
 
     public void Spawn2(GameObject flesh)
     {
@@ -161,12 +206,6 @@ public class NerveSpawn : MonoBehaviour
             joint.connectedBody = targetBLink.GetComponent<Rigidbody>();
         }
     }
-
-
-
-
-
-
 }
 
 
