@@ -4,6 +4,7 @@ public class CollisionHandler : MonoBehaviour
 {
     [SerializeField] GameObject nervePrefab, parentObject, player, brain, flesh1, flesh2, BLink1, BLink2;
     [SerializeField] float fleshYOffset, brainYOffset;
+    [SerializeField] LayerMask brainLayer;
 
     GameObject fleshAttached, brainAtttached;
 
@@ -11,10 +12,12 @@ public class CollisionHandler : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Flesh")
+        if (other.tag == "Flesh" && nerveSpawn.IsAttachedToPlayer() == true)
         {
-            Vector3 contactPoint = other.ClosestPoint(transform.position);
-            nerveSpawn.MoveConnectionToFlesh(other.gameObject, contactPoint);
+            if (Physics.Raycast(transform.position, other.transform.position - transform.position, out RaycastHit hit, 100f, brainLayer))
+            {
+                nerveSpawn.MoveConnectionToFlesh(other.gameObject, hit.point);
+            }
         }
 
         if (other.tag == "Brain" && nerveSpawn.IsAttachedToPlayer() == false)
