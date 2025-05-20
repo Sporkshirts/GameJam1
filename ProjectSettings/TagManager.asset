@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CinemachineTarget
   - Nerve
+  - Flesh
   layers:
   - Default
   - TransparentFX

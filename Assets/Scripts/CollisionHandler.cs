@@ -11,8 +11,18 @@ public class CollisionHandler : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "Flesh")
+        {
+            Vector3 contactPoint = other.ClosestPoint(transform.position);
+            nerveSpawn.MoveConnectionToFlesh(other.gameObject, contactPoint);
+        }
 
-        if (other.name == "Flesh1")
+        if (other.tag == "Brain" && nerveSpawn.IsAttachedToPlayer() == false)
+        {
+            nerveSpawn.Spawn();
+        }
+
+        /*if (other.name == "Flesh1")
         {
             Debug.Log("It's 1.");
 
@@ -40,8 +50,7 @@ public class CollisionHandler : MonoBehaviour
             rb1.constraints = RigidbodyConstraints.FreezeAll;
 
             // update "score that Flesh1 is now tethered.
-        }
-
+        }*/
 
     }
 

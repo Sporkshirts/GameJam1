@@ -116,7 +116,7 @@ public class NerveSpawn : MonoBehaviour
 
             if (playerAttached != null)
             {
-                playerAttached.GetComponent<Renderer>().enabled = false; 
+                playerAttached.GetComponent<Renderer>().enabled = false;
                 playerAttached.transform.position = player.transform.position + Vector3.up * playerYOffset;
 
                 Rigidbody playerRb = player.GetComponent<Rigidbody>();
@@ -129,6 +129,29 @@ public class NerveSpawn : MonoBehaviour
         }
 
 
+    }
+
+    public void MoveConnectionToFlesh(GameObject flesh, Vector3 contactPoint)
+    {
+        if (playerAttached == null)
+        {
+            return;
+        }
+
+        Destroy(player.GetComponent<CharacterJoint>());
+
+        GameObject fleshAttached = playerAttached;
+        playerAttached = null;
+
+        fleshAttached.transform.position = contactPoint;
+
+        CharacterJoint fleshJoint = flesh.AddComponent<CharacterJoint>();
+        fleshJoint.connectedBody = fleshAttached.GetComponent<Rigidbody>();
+    }
+
+    public bool IsAttachedToPlayer()
+    {
+        return playerAttached;
     }
 
 
