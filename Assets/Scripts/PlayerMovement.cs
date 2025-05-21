@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,12 +13,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float maxPitchAngle = 30f;
     [SerializeField] private float maxPitchAngleNoInput = 75f;
 
+    [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject settingsMenu;
+    [SerializeField] private CinemachineInputAxisController cameraControls;
+
 
     private Rigidbody rb;
     private PlayerInput playerInput;
     private InputAction moveAction;
     private InputAction moveUpAction;
     private InputAction moveDownAction;
+    private InputAction pauseAction;
 
     private float verticalInput;
 
@@ -36,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
         moveAction = playerInput.actions["Move"];
         moveUpAction = playerInput.actions["MoveUp"];
         moveDownAction = playerInput.actions["MoveDown"];
+        pauseAction = playerInput.actions["Pause"];
         cameraTransform = Camera.main.transform;
     }
 
@@ -44,6 +51,28 @@ public class PlayerMovement : MonoBehaviour
         MovePlayerRelativeToCamera();
         RotatePlayerHorizontally();
         RotatePlayerVertically();
+    }
+
+    private void OnEnable()
+    {
+        pauseAction.performed += PauseGame;
+    }
+    private void OnDisable()
+    {
+        pauseAction.performed -= PauseGame;
+    }
+
+    private void PauseGame(InputAction.CallbackContext context)
+    {
+        if (Time.timeScale > 0)
+        {
+            GameManager.Instance.PauseMenu();
+        }
+        else
+        {
+            GameManager.Instance.Resume();
+        }
+        
     }
 
     private void MovePlayerRelativeToCamera()
@@ -81,7 +110,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         currentVelocity = Vector3.SmoothDamp(currentVelocity, targetVelocity, ref velocitySmoothDamp, smoothTime);
-        
+
         Vector3 displacement = currentVelocity.magnitude * transform.forward * Time.fixedDeltaTime;
 
         rb.MovePosition(rb.position + displacement);

@@ -8,6 +8,15 @@ TagManager:
   - Nerve
   - Flesh
   - Brain
+  - Camera Slider
+  - Volume Slider
+  - Settings Button
+  - Return Button
+  - Settings Gameobject
+  - Menu Gameobject
+  - Exit Button
+  - Start Button
+  - Resume Button
   layers:
   - Default
   - TransparentFX
