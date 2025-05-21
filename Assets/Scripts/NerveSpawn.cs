@@ -18,6 +18,8 @@ public class NerveSpawn : MonoBehaviour
 
     [SerializeField] bool reset, spawn, snapFirst, snapLast;
 
+    [SerializeField] AudioSource Squish;
+
     GameObject playerAttached, brainAtttached, flesh1Attached, flesh2Attached, bLink1Attached, bLink2Attached;
 
 
@@ -110,7 +112,7 @@ public class NerveSpawn : MonoBehaviour
                 brainJoint.connectedBody = brainRb;
             }
         }
-
+        Squish.Play();
         if (player != null)
         {
 
@@ -147,6 +149,7 @@ public class NerveSpawn : MonoBehaviour
 
         CharacterJoint fleshJoint = flesh.AddComponent<CharacterJoint>();
         fleshJoint.connectedBody = fleshAttached.GetComponent<Rigidbody>();
+        
     }
 
     public bool IsAttachedToPlayer()
