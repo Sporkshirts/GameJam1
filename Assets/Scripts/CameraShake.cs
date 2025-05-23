@@ -1,39 +1,27 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Cinemachine;
 
 public class CameraShake : MonoBehaviour
 {
-    public Transform camTransform;
-    public float shakeDuration = 0f;
-    public float shakeAmount = 0.7f;
-    public float decreaseFactor = 1.0f;
+    public static CameraShake Instance { get; private set; }
+    private CinemachineImpulseSource cinemachineImpulseSource;
 
-    Vector3 originalPos;
-
-    void Awake()
+    private void Awake()
     {
-        if (camTransform == null)
+        cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
+
+        if (Instance != null)
         {
-            camTransform = GetComponent(typeof(Transform)) as Transform;
+            Destroy(gameObject);
+            return;
         }
+        Instance = this;
+    }
+    
+    public void Shake(float intensity = 1f)
+    {
+        cinemachineImpulseSource.GenerateImpulse(intensity);
     }
 
-    void OnEnable()
-    {
-        originalPos = camTransform.localPosition;
-    }
-
-    void Update()
-    {
-        if (shakeDuration > 0)
-        {
-            camTransform.localPosition = originalPos + Random.insideUnitSphere * shakeAmount;
-            shakeDuration -= Time.deltaTime * decreaseFactor;
-        }
-        else
-        {
-            shakeDuration = 0f;
-            camTransform.localPosition = originalPos;
-        }
-    }
 }

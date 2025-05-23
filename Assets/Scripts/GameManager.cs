@@ -49,8 +49,7 @@ public class GameManager : MonoBehaviour
             menuGameobject.SetActive(true);
             settingsGameobject.SetActive(false);
         }
-
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level"))
+        else
         {
             menuGameobject.SetActive(false);
             settingsGameobject.SetActive(false);
