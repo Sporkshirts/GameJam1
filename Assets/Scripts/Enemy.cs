@@ -5,15 +5,21 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    private enum EnemyState { Idle, Chasing, Searching, Returning }
+
+    [SerializeField] private EnemyState currentState = EnemyState.Idle;
+
     [SerializeField] private Transform player;
     [SerializeField] private Transform damagePoint;
     [SerializeField] private float speed = 3.0f;
     [SerializeField] private bool chase = false;
-    [SerializeField] private bool returnToSpawn = false;
+    [SerializeField] private bool returnToSpawn = true;
     [SerializeField] private float searchRange;
     [SerializeField] private float attackRange;
     [SerializeField] private float cooldown;
     [SerializeField] private LayerMask searchMask;
+
+
 
     float cooldownTimer = 0;
 
@@ -22,7 +28,6 @@ public class Enemy : MonoBehaviour
     Rigidbody rb;
 
     bool walk = false;
-
 
     [SerializeField] Animator animator;
 
@@ -34,43 +39,75 @@ public class Enemy : MonoBehaviour
 
     void FixedUpdate()
     {
-        chase = SearchForPlayer();
         cooldownTimer -= Time.fixedDeltaTime;
 
-        if (!chase)
+        bool seesPlayer = SearchForPlayer();
+
+        switch (currentState)
         {
-            if (returnToSpawn)
-            {
-                if (Vector3.Distance(transform.position, spawnPosition) > 0.2f) MoveToDestination(spawnPosition);
+            case EnemyState.Idle:
+                if (seesPlayer)
+                {
+                    currentState = EnemyState.Chasing;
+                }
+                break;
+
+            case EnemyState.Chasing:
+                if (seesPlayer)
+                {
+                    lastTargetPosition = player.position;
+                    MoveToDestination(player.position);
+
+                    if (Vector3.Distance(transform.position, player.position) <= attackRange && cooldownTimer <= 0)
+                    {
+                        Attack();
+                    }
+                }
                 else
                 {
-                    if (walk == true)
+                    currentState = EnemyState.Searching;
+                }
+                break;
+
+            case EnemyState.Searching:
+                if (seesPlayer)
+                {
+                    currentState = EnemyState.Chasing;
+                }
+
+                if (Vector3.Distance(transform.position, lastTargetPosition) > 0.2f)
+                {
+                    MoveToDestination(lastTargetPosition);
+                }
+                else
+                {
+                    currentState = EnemyState.Returning;
+                }
+                break;
+
+            case EnemyState.Returning:
+                if (seesPlayer)
+                {
+                    currentState = EnemyState.Chasing;
+                }
+
+                if (Vector3.Distance(transform.position, spawnPosition) > 0.2f)
+                {
+                    MoveToDestination(spawnPosition);
+                }
+                else
+                {
+                    if (walk)
                     {
                         walk = false;
                         animator.SetBool("Walk", false);
                     }
+                    currentState = EnemyState.Idle;
                 }
-            }
-            else if (Vector3.Distance(transform.position, lastTargetPosition) > 0.2f)
-            {
-                if (Vector3.Distance(transform.position, lastTargetPosition) > 0.2f) MoveToDestination(lastTargetPosition);
-                if (Vector3.Distance(transform.position, lastTargetPosition) < 0.3f) returnToSpawn = true;
-            }
-            return;
+                break;
         }
-
-        if(cooldownTimer > 0)
-        {
-            return;
-        }
-
-
-        returnToSpawn = false;
-        MoveToDestination(player.position);
-        lastTargetPosition = player.position;
-
-
     }
+
 
     public float GetTimer()
     {
