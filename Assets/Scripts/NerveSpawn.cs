@@ -20,12 +20,20 @@ public class NerveSpawn : MonoBehaviour
 
     [SerializeField] AudioSource Squish;
     [SerializeField] AudioSource Scream1;
+    [SerializeField] AudioSource Plug;
 
     GameObject playerAttached, brainAtttached, flesh1Attached, flesh2Attached, bLink1Attached, bLink2Attached;
 
+
     CameraShake cameraShake;
+    
+    DarkenScene darkenScene;
 
-
+    void Awake()
+    {
+        cameraShake = Camera.main.GetComponent<CameraShake>();
+        darkenScene = FindObjectOfType<DarkenScene>();
+    }
 
 
 
@@ -155,14 +163,23 @@ public class NerveSpawn : MonoBehaviour
         CharacterJoint fleshJoint = flesh.AddComponent<CharacterJoint>();
         fleshJoint.connectedBody = fleshAttached.GetComponent<Rigidbody>();
 
-        
-        Scream1.Play();
-        cameraShake.shakeDuration = 3;
+        PlugEffects();
+    
+        cameraShake.shakeDuration = 3.0f; 
     }
 
     public bool IsAttachedToPlayer()
     {
         return playerAttached;
+    }
+
+
+    public void PlugEffects()
+    {
+        Plug.Play();
+        Scream1.Play();
+        darkenScene.amount = -50f;
+        darkenScene.DarkIt();
     }
 
 
