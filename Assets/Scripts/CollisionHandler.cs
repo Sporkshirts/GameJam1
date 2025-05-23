@@ -12,7 +12,7 @@ public class CollisionHandler : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Flesh" && nerveSpawn.IsAttachedToPlayer() == true)
+        if (other.tag == "Flesh" && nerveSpawn.IsFleshConnected(other.gameObject) == false && nerveSpawn.IsAttachedToPlayer() == true)
         {
             if (Physics.Raycast(transform.position, other.transform.position - transform.position, out RaycastHit hit, 100f, brainLayer))
             {

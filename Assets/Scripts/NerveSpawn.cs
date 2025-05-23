@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class NerveSpawn : MonoBehaviour
@@ -25,10 +27,25 @@ public class NerveSpawn : MonoBehaviour
     [SerializeField] float cameraShakeIntensity = 1f;
     [SerializeField] float darkenAmount = -0.2f;
 
+    List<GameObject> currentNerveChain = new List<GameObject>();
+    List<GameObject> connectedFlesh = new List<GameObject>();
+
     GameObject playerAttached, brainAtttached, flesh1Attached, flesh2Attached, bLink1Attached, bLink2Attached;
 
+    public static NerveSpawn Instance;
 
-    // Update is called once per frame
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     void Update()
     {
         if (reset)
@@ -53,6 +70,8 @@ public class NerveSpawn : MonoBehaviour
     {
         if (parentObject == null || nervePrefab == null) return;
 
+        currentNerveChain.Clear();
+
         int count = Mathf.CeilToInt(length / nerveDistance);
 
         GameObject previousSegment = null;
@@ -67,6 +86,7 @@ public class NerveSpawn : MonoBehaviour
             Vector3 spawnPos = startPoint + direction * (nerveDistance * i);
 
             GameObject segment = Instantiate(nervePrefab, spawnPos, rotation, parentObject.transform);
+            currentNerveChain.Add(segment);
             segment.name = (i + 1).ToString();
 
             if (i == 0)
@@ -132,9 +152,13 @@ public class NerveSpawn : MonoBehaviour
             }
 
         }
-
-
     }
+
+    public bool IsFleshConnected(GameObject flesh)
+    {
+        return connectedFlesh.Contains(flesh);
+    }
+    
 
     public void MoveConnectionToFlesh(GameObject flesh, Vector3 contactPoint)
     {
@@ -143,6 +167,9 @@ public class NerveSpawn : MonoBehaviour
             return;
         }
 
+        currentNerveChain.Clear();
+
+        connectedFlesh.Add(flesh);
 
         Destroy(player.GetComponent<CharacterJoint>());
 
@@ -155,6 +182,26 @@ public class NerveSpawn : MonoBehaviour
         fleshJoint.connectedBody = fleshAttached.GetComponent<Rigidbody>();
 
         PlugEffects();
+    }
+
+    public void DestroyConnectionToPlayer()
+    {
+        if (playerAttached == null)
+        {
+            return;
+        }
+
+        Destroy(player.GetComponent<CharacterJoint>());
+
+        foreach (var segment in currentNerveChain)
+        {
+            Destroy(segment);
+        }
+
+        playerAttached = null;
+        brainAtttached = null;
+
+        currentNerveChain.Clear();
     }
 
     public bool IsAttachedToPlayer()

@@ -1,6 +1,3 @@
-using System;
-using UnityEditor.Callbacks;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -12,14 +9,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private Transform damagePoint;
     [SerializeField] private float speed = 3.0f;
-    [SerializeField] private bool chase = false;
-    [SerializeField] private bool returnToSpawn = true;
     [SerializeField] private float searchRange;
     [SerializeField] private float attackRange;
     [SerializeField] private float cooldown;
     [SerializeField] private LayerMask searchMask;
-
-
 
     float cooldownTimer = 0;
 
@@ -120,6 +113,8 @@ public class Enemy : MonoBehaviour
         animator.SetBool("Walk", false);
         animator.SetTrigger("Attack");
         cooldownTimer = cooldown;
+
+        NerveSpawn.Instance.DestroyConnectionToPlayer();
     }
 
     private void RotateTowardsDestination(Vector3 destination)
@@ -156,21 +151,4 @@ public class Enemy : MonoBehaviour
         return false;
     }
 
-
-    //Old Search Method
-    /*private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Player")
-        {
-            chase = true;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Player")
-        {
-            chase = false;
-        }
-    }*/
 }
