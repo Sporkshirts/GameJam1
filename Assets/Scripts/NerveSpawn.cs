@@ -23,9 +23,10 @@ public class NerveSpawn : MonoBehaviour
     [SerializeField] AudioSource Squish;
     [SerializeField] AudioSource Scream1;
     [SerializeField] AudioSource Plug;
+    [SerializeField] AudioSource snap;
 
     [SerializeField] float cameraShakeIntensity = 1f;
-    [SerializeField] float darkenAmount = -0.2f;
+    [SerializeField] float darkenAmount = -0.33f;
 
     List<GameObject> currentNerveChain = new List<GameObject>();
     List<GameObject> connectedFlesh = new List<GameObject>();
@@ -202,6 +203,7 @@ public class NerveSpawn : MonoBehaviour
         brainAtttached = null;
 
         currentNerveChain.Clear();
+        snap.Play();
     }
 
     public bool IsAttachedToPlayer()

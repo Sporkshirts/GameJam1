@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float attackRange;
     [SerializeField] private float cooldown;
     [SerializeField] private LayerMask searchMask;
+    [SerializeField] AudioSource Grr;
 
     float cooldownTimer = 0;
 
@@ -54,6 +55,7 @@ public class Enemy : MonoBehaviour
                     if (Vector3.Distance(transform.position, player.position) <= attackRange && cooldownTimer <= 0)
                     {
                         Attack();
+                        
                     }
                 }
                 else
@@ -112,6 +114,7 @@ public class Enemy : MonoBehaviour
         walk = false;
         animator.SetBool("Walk", false);
         animator.SetTrigger("Attack");
+        Grr.Play();
         cooldownTimer = cooldown;
 
         NerveSpawn.Instance.DestroyConnectionToPlayer();
