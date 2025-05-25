@@ -1,5 +1,6 @@
-using System;
-using NUnit.Framework.Interfaces;
+
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,9 +13,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Slider volumeSlider;
     [SerializeField] private Slider cameraSlider;
+    [SerializeField] private Image fadeImage;
+    [SerializeField] private float fadeDuration = 2f;
 
     [SerializeField] private CinemachineInputAxisController axisControllers;
 
+    List<Enemy> enemies;
     public static GameManager Instance;
 
     private Button settingsButton;
@@ -30,6 +34,8 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 60;
+        
         if (Instance == null)
         {
             Instance = this;
@@ -42,8 +48,43 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public IEnumerator EndGame()
+    {
+        yield return Fade(0f, 1f);
+    }
+
+    private IEnumerator Fade(float start, float end)
+    {
+        float elapsed = 0f;
+        Color color = fadeImage.color;
+
+        yield return new WaitForSeconds(2f);
+
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(start, end, elapsed / fadeDuration);
+            fadeImage.color = new Color(color.r, color.g, color.b, alpha);
+
+            float tempVolume = Mathf.Lerp(storedVolume, 0, elapsed / fadeDuration);
+            AudioListener.volume = tempVolume;
+            yield return null;
+        }
+
+        fadeImage.color = new Color(color.r, color.g, color.b, end);
+
+        SceneManager.LoadScene(2);
+
+    }
+
+
     private void SetDefaultMenu()
     {
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("End Scene"))
+        {
+            return;
+        }
+
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Main Menu"))
         {
             menuGameobject.SetActive(true);
@@ -141,8 +182,28 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        volumeSlider = GameObject.FindWithTag("Volume Slider").GetComponent<Slider>();
-        cameraSlider = GameObject.FindWithTag("Camera Slider").GetComponent<Slider>();
+        GameObject volumeGameobject = GameObject.FindWithTag("Volume Slider");
+        GameObject cameraGameobject = GameObject.FindWithTag("Camera Slider");
+
+        if (volumeGameobject)
+        {
+            volumeSlider = volumeGameobject.GetComponent<Slider>();
+        }
+
+        if (cameraGameobject)
+        {
+            cameraSlider = cameraGameobject.GetComponent<Slider>();
+        }
+
+        GameObject fadeGameObject = GameObject.FindWithTag("Fade");
+
+        if (fadeGameObject)
+        {
+            fadeImage = fadeGameObject.GetComponent<Image>();
+        }
+        var enemyFound = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        enemies = new List<Enemy>(enemyFound);
+
         AssignGameobjects();
         AssignButtons();
         AssignSliders();
@@ -203,6 +264,11 @@ public class GameManager : MonoBehaviour
 
     private void AssignButtons()
     {
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("End Scene"))
+        {
+            return;
+        }
+
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Main Menu"))
         {
             startButton = GameObject.FindGameObjectWithTag("Start Button").GetComponent<Button>();
@@ -229,6 +295,8 @@ public class GameManager : MonoBehaviour
         settingsGameobject.SetActive(false);
         menuGameobject.SetActive(true);
 
+        Cursor.lockState = CursorLockMode.None;
+
         if (axisControllers == true && axisControllers.enabled == true)
         {
             axisControllers.enabled = false;
@@ -243,6 +311,8 @@ public class GameManager : MonoBehaviour
     {
         settingsGameobject.SetActive(false);
         menuGameobject.SetActive(false);
+
+        Cursor.lockState = CursorLockMode.Locked;
 
         Time.timeScale = 1f;
         AudioListener.pause = false;

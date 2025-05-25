@@ -17,6 +17,7 @@ TagManager:
   - Exit Button
   - Start Button
   - Resume Button
+  - Fade
   layers:
   - Default
   - TransparentFX

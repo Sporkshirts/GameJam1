@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject settingsMenu;
     [SerializeField] private CinemachineInputAxisController cameraControls;
+    [SerializeField] private Animator animator;
 
 
     private Rigidbody rb;
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         rb = GetComponent<Rigidbody>();
 
         playerInput = GetComponent<PlayerInput>();
@@ -102,10 +104,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (move.magnitude > 0.1f || verticalInput != 0.0f)
         {
+            animator.SetBool("Walk", true);
             smoothTime = 1.0f / acceleration;
         }
         else
         {
+            animator.SetBool("Walk", false);
             smoothTime = 1.0f / deceleration;
         }
 

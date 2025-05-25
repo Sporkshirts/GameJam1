@@ -1953,6 +1953,8 @@ MonoBehaviour:
   menuGameobject: {fileID: 0}
   volumeSlider: {fileID: 0}
   cameraSlider: {fileID: 0}
+  fadeImage: {fileID: 0}
+  fadeDuration: 1
   axisControllers: {fileID: 0}
 --- !u!4 &1176351147
 Transform:

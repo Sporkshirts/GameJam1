@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 44564d926a37df6499d147fc8903b0d5
+guid: 30777555efb708b4c97e93eed1f5bca9
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: T_ATB_FaceCard_Eyelashes
-    second: {fileID: 2100000, guid: fa5d9bbc37f5b2347bdd2d785f915ea3, type: 2}
+      name: Material.001
+    second: {fileID: 2100000, guid: 3f152ddd6e566064d9368c07002fdce7, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -34,36 +34,7 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations:
-    - serializedVersion: 16
-      name: Worm|Worm_walk
-      takeName: Worm|Worm_walk
-      internalID: 4544305888911228714
-      firstFrame: 0
-      lastFrame: 12
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+    clipAnimations: []
     isReadable: 0
   meshes:
     lODScreenPercentages: []

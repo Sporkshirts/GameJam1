@@ -18,6 +18,11 @@ public class CollisionHandler : MonoBehaviour
             {
                 nerveSpawn.MoveConnectionToFlesh(other.gameObject, hit.point);
             }
+
+            if (nerveSpawn.IsAllFleshLinked())
+            {
+                StartCoroutine(GameManager.Instance.EndGame());
+            }
         }
 
         if (other.tag == "Brain" && nerveSpawn.IsAttachedToPlayer() == false)

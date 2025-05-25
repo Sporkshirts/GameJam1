@@ -141,7 +141,7 @@ public class NerveSpawn : MonoBehaviour
 
             if (playerAttached != null)
             {
-                playerAttached.GetComponent<Renderer>().enabled = false;
+                playerAttached.GetComponentInChildren<Renderer>().enabled = false;
                 playerAttached.transform.position = player.transform.position + Vector3.up * playerYOffset;
 
                 Rigidbody playerRb = player.GetComponent<Rigidbody>();
@@ -152,6 +152,18 @@ public class NerveSpawn : MonoBehaviour
                 }
             }
 
+        }
+    }
+
+    public bool IsAllFleshLinked()
+    {
+        if (connectedFlesh.Count >= 4)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
