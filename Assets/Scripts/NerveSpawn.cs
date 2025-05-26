@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NerveSpawn : MonoBehaviour
 {
@@ -30,6 +31,9 @@ public class NerveSpawn : MonoBehaviour
 
     List<GameObject> currentNerveChain = new List<GameObject>();
     List<GameObject> connectedFlesh = new List<GameObject>();
+
+
+    public int CountDown = 0;
 
     GameObject playerAttached, brainAtttached, flesh1Attached, flesh2Attached, bLink1Attached, bLink2Attached;
 
@@ -195,6 +199,13 @@ public class NerveSpawn : MonoBehaviour
         fleshJoint.connectedBody = fleshAttached.GetComponent<Rigidbody>();
 
         PlugEffects();
+
+        CountDown++;
+        Debug.Log(CountDown);
+        if (CountDown == 4)
+        {
+            SceneManager.LoadScene(2);
+        }
     }
 
     public void DestroyConnectionToPlayer()
